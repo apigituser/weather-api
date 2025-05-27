@@ -1,0 +1,4 @@
+key.env
+WEATHER_DATA.json
+venv/
+__pycache__
