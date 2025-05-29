@@ -1,10 +1,32 @@
+from dotenv import load_dotenv
+from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import redis
 import requests
 import json
 import os
-from dotenv import load_dotenv
-from flask import Flask
 
 app = Flask(__name__)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["20 per hour"],
+    storage_uri="memory://",
+)
+
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+
+@app.route("/gocrazy")
+@limiter.exempt
+def gocrazy():
+    return "RAAAAAAARRRRRRRRRR"
+
+@app.route("/check", methods=['GET'])
+@limiter.limit("10 per minute")
+def check():
+    return "10 requests per minute ONLY"
 
 @app.route("/<location>", methods=['GET'])
 def weatherData(location):
