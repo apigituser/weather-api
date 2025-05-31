@@ -1,10 +1,9 @@
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import redis, redis.exceptions
-from redis.typing import ExpiryT
-import requests, datetime, json, os
+import requests, datetime, os
 
 app = Flask(__name__)
 
