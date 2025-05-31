@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import redis, redis.exceptions
-import requests, datetime, os
+from redis.typing import ExpiryT
+import requests, datetime, json, os
 
 app = Flask(__name__)
 
@@ -25,6 +26,10 @@ except Exception as internal_error:
 
 @app.route("/<location>", methods=['GET'])
 def weatherData(location):
+    if r.exists(location):
+        redis_data = r.hgetall(location)
+        return redis_data
+    
     load_dotenv(dotenv_path="key.env")
 
     key = os.getenv('KEY')
@@ -51,8 +56,8 @@ def weatherData(location):
             'sunrise': days['sunrise'],
             'sunset': days['sunset']
     }
-    
-    #r.set(location, str(data), ex=20)
-    redis_data = r.get(location)
 
-    return redis_data
+    r.hset(location, mapping=data)
+    r.expire(location, 120, nx=True)
+
+    return data
