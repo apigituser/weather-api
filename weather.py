@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import redis, redis.exceptions
@@ -14,9 +14,10 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 try:
-    r.get('hash')
+    r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+    r.ping()
+    print("Redis Connection Established")
 except redis.exceptions.ConnectionError as e:
     print('Redis ConnectionError: Couldn\'t Connect To The Server\n')
     exit(1)
@@ -32,8 +33,8 @@ def weatherData(location):
     load_dotenv(dotenv_path="key.env")
 
     key = os.getenv('KEY')
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
-    query = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}/{date}?include=current&key={key}"
+
+    query = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}?key={key}"
     response = requests.get(query)
 
     if response.status_code == 400:
