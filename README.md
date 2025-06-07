@@ -1,6 +1,24 @@
 # Weather API
 The weather-api takes the name of a location and returns weather data to the user
 
+## Example Response
+```
+{
+  "conditions": "Rain, Partially cloudy",
+  "currenttemp": "73.8",
+  "datetime": "2025-06-07",
+  "description": "Partly cloudy throughout the day with rain in the morning and afternoon.",
+  "latitude": "40.7146",
+  "longitude": "-74.0071",
+  "maxtemp": "76.9",
+  "mintemp": "69.0",
+  "sunrise": "05:25:08",
+  "sunset": "20:25:16",
+  "timezone": "America/New_York",
+  "winddirection": "356.1",
+  "windspeed": "5.8"
+}
+```
 ## Installation
 1. Clone this repository
 ```
@@ -16,14 +34,23 @@ flask --app weather run
 ```
 
 ## Usage
-Type a location in the URL
-### Format
+Create a key.env file and write your visualcrossing key in it like below
+```
+KEY=Your_Key
+```
+### URL Format
 ```
 127.0.0.1:5000/<location>
 ```
 ### Example
 ```
 127.0.0.1:5000/Shibuya
+```
+
+## Optional
+Change the redis connection information as per your own environment in weather.py
+```
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 ```
 
 ## Roadmap.sh Project URL
