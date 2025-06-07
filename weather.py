@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import redis, redis.exceptions
-import requests, datetime, os
+import requests, os
 
 app = Flask(__name__)
 
@@ -25,6 +25,7 @@ except Exception as internal_error:
     raise internal_error
 
 @app.route("/<location>", methods=['GET'])
+@limiter.limit("10 per minute")
 def weatherData(location):
     if r.exists(location):
         redis_data = r.hgetall(location)
@@ -33,12 +34,15 @@ def weatherData(location):
     load_dotenv(dotenv_path="key.env")
 
     key = os.getenv('KEY')
-
+    
     query = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}?key={key}"
     response = requests.get(query)
 
     if response.status_code == 400:
-        return {"BadRequest": "Location Not Found"}
+        return {"400": "BadRequest"}
+    elif response.status_code == 401:
+        return {"401": "Unauthorized"}
+
     jsonData = response.json()
 
     days = jsonData['days'][0]
