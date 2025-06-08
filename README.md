@@ -19,7 +19,7 @@ The weather-api takes the name of a location and returns weather data to the use
   "windspeed": "5.8"
 }
 ```
-## Installation
+## Installation and Setup
 1. Clone this repository
 ```
 git clone https://github.com/apigituser/weather-api
@@ -28,23 +28,18 @@ git clone https://github.com/apigituser/weather-api
 ```
 pip install -r requirements.txt
 ```
-3. Run the flask application using the command below
-```
-flask --app weather run
-```
-
-## Usage
-Create a key.env file and write your visualcrossing key in it like below
+3. Create a key.env file and write your visualcrossing key in it like below
 ```
 KEY=Your_Key
 ```
-### URL Format
+4. Run the flask application using the command below
 ```
-127.0.0.1:5000/<location>
+flask --app weather run
 ```
-### Example
+5. Open your browser and go to the URL
 ```
-127.0.0.1:5000/Shibuya
+127.0.0.1:5000/<location>  // URL Format
+127.0.0.1:5000/Shibuya     // Example Request
 ```
 
 ## Optional
